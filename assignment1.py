@@ -58,7 +58,6 @@ def counting_sort(arr, index=False):  # example in notes
     if index:
         return (res, arr)
     return arr
-
 # %%
 
 
@@ -193,8 +192,8 @@ def words_with_anagrams(list1, list2):
     tup1, tup2 = counting_sort(sum_lst1, True), counting_sort(sum_lst2, True)
     index1, sorted1 = tup1[0], tup1[1]
     index2, sorted2 = tup2[0], tup2[1]
-    print("Sorted 1 = " + str(sorted1))
-    print("Sorted 2 = " + str(sorted2))
+    # print("Sorted 1 = " + str(sorted1))
+    # print("Sorted 2 = " + str(sorted2))
     j = 0
     res = []
     for i in range(n):
@@ -207,7 +206,7 @@ def words_with_anagrams(list1, list2):
 
 lst1 = ["spot", "tops", "dad", "simple", "dine", "cats"]
 lst2 = ["pots", "add", "simple", "dined", "acts", "cast"]
-print(words_with_anagrams(lst1, lst2))
+# print(words_with_anagrams(lst1, lst2))
 
 # %%
 # %%
