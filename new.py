@@ -45,7 +45,7 @@ def best_interval(transactions, t):
     max_count_index = 0
 
     # TODO: need to eliminate max digit
-    transactions = radix_sort(transactions, 10, 2)
+    transactions = radix_sort(transactions, 10, len(str(max(transactions))))
     print(transactions)
     reversed_ls = transactions[::-1]  # O(n) descending list
     j = 0
@@ -69,33 +69,39 @@ def get_char(word, d):
     return -1
 
 # arr = [(anagram, original word)]
-def radix_sort_str_aux(arr, aux, d):
+
+
+def radix_sort_str(arr):  # determine the complexity, this is not in place
+    d = 0
     radix = 26
     lo, hi = 0, len(arr) - 1
     count_ls = [0] * (radix + 2)  # 26 char + 2 blank
     r = 0
+    aux = [0] * len(arr)
+    res_arr = []
     while lo < hi and r < radix:
         for i in range(lo, hi + 1):
-            count_ls[get_char(arr[i], d) + 2] += 1
+            count_ls[get_char(arr[i][0], d) + 2] += 1
         for r in range(radix + 1):
             count_ls[r + 1] += count_ls[r]
         for i in range(lo, hi + 1):
-            count_ls[get_char(arr[i], d) + 1] += 1
-            count = count_ls[get_char(arr[i], d) + 1]
+            anagram_word = arr[i][0]
+            count_ls[get_char(anagram_word, d) + 1] += 1
+            count = count_ls[get_char(anagram_word, d) + 1]
             aux[count - 1] = arr[i]
         for i in range(lo, hi + 1):
             arr[i] = aux[i - lo]
+        temp_lo = lo
         lo = lo + count_ls[r]
-        hi = lo + count_ls[r + 1] - 1
+        hi = temp_lo + count_ls[r + 1] - 1
         d += 1
         r += 1
-
-
-def radix_sort_str(arr):
-    n = len(arr)
-    aux = [0] * n
-    radix_sort_str_aux(arr, aux, 0)
-    return arr
+    for i in range(len(arr)):
+        if i > 0 and arr[i][0] == arr[i - 1][0]:
+            res_arr[-1][1].append(arr[i][1])
+        else:
+            res_arr.append((arr[i][0], [arr[i][1]]))
+    return res_arr
 
 
 # ---------------------Anagram-----------------------#
@@ -114,7 +120,7 @@ def ord_self(alphabet):
     return ord(alphabet) - 96
 
 
-def counting_sort_letter(word):
+def counting_sort_letter(word): # sort word to anagram
     n = len(word)
     radix = 26
     count_ls = [0] * radix
@@ -132,15 +138,41 @@ def counting_sort_letter(word):
     return (res, word)
 
 
+# def search(arr, key):
+#     n = len(arr)
+#     lo, hi = 0, n
+#     while lo < hi:
+#         mid = (lo + hi) // 2
+#         mid_word = arr[mid][0]
+#         i = 0
+#         if ord(key[0]) >= ord(mid_word[0]):
+#             if len(key) >= len(mid_word):
+#                 index = len(mid_word)
+#                 while i < index and ord(key[i]) >= ord(mid_word[i])
+#             lo = mid
+#         else:
+#             hi = mid
+#     if len(arr) > 0 and arr[lo][0] == key:
+#         return True
+#     else:
+#         return False
+
+
 def words_with_anagrams(list1, list2):
     new_lst1, new_lst2 = [], []
+    res = []
+    index = 0
     for i in range(len(list1)):  # take O(nm) n = len(list) and m = length of longest word
         new_lst1.append(counting_sort_letter(list1[i]))
+    for i in range(len(list2)): 
         new_lst2.append(counting_sort_letter(list2[i]))
+    new_lst1 = radix_sort_str(new_lst1)
+    new_lst2 = radix_sort_str(new_lst2)
     print("List 1: " + str(new_lst1))
     print("List 2: " + str(new_lst2))
-    radix_sort_str(new_lst1)
-    return
+    # for i in range(len(new_lst1)):
+        
+    return res
 
 
 # ---------------------Test Cases-----------------------#
@@ -152,5 +184,6 @@ lst1 = ["spot", "tops", "dad", "simple", "dine", "cats"]
 lst2 = ["pots", "add", "simple", "dined", "acts", "cast"]
 # print(best_interval(transactions, t))
 # print(radix_sort_str(lst1))
-print(radix_sort_str(lst2))
-# words_with_anagrams(lst1, lst2)
+print(words_with_anagrams(lst1, lst2))
+# print(words_with_anagrams(lst1, lst2))
+# print(best_interval( [15,21,22,22,24,25,29,30,31], 5))
