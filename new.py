@@ -33,10 +33,13 @@ def radix_sort_aux(arr, base, digit):  # example in notes
 
 def radix_sort(arr):
     max_num = 0 
+    digit = 0
     for i in arr:
         if max_num < i:
             max_num = i 
-    digit = math.ceil(math.log10(max_num))
+    while max_num != 0:
+        max_num = max_num // 10 
+        digit += 1
     for d in range(0, digit):
         arr = radix_sort_aux(arr, 10, d)
     return arr
@@ -49,16 +52,23 @@ def best_interval(transactions, t):
     max_count_index = 0
 
     transactions = radix_sort(transactions)
+    print(transactions)
     j = 0
-    k = transactions[j] + t  # end point
+    # k = transactions[j] + t  # end point
+    max_count = 0
+    max_count_index = 0
     for i in range(n):
-        if transactions[i] <= k:
-            if i - j + 1 > max_count:
-                max_count = i - j + 1
-                max_count_index = max(transactions[i] - t, 0)
-        else:
-            j += 1
-            k = transactions[j] + t
+        end = i + 1
+        count = 1
+        k = transactions[i] + t
+        print("t[i] = " + str(transactions[i]))
+        print("k = " + str(k))
+        while end < n and transactions[end] <= k:
+            count += 1 
+            end += 1 
+        if count > max_count:
+            max_count = count 
+            max_count_index = max(0, transactions[end - 1] - t)
     return (max_count_index, max_count)
 
 # ---------------------Function 3-----------------------#
