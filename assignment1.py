@@ -101,29 +101,25 @@ def radix_sort(arr, b, digits, to_int=False):
 
 
 def best_interval(transactions, t):
+    n = len(transactions)
     max_count = 0
     max_count_index = 0
-    length = len(transactions)
-    max_num = max(transactions)  # O(n)
-    # sorted list, try to change it into radix sort
-    new_trans_ls = counting_sort(transactions, max_num)
-    reversed_ls = new_trans_ls[::-1]  # O(n) descending list
+
+    transactions = radix_sort(transactions)
     j = 0
-    k = new_trans_ls[j] + t  # end point
-    # print(reversed_ls)
-    for i in range(length):
-        if 0 < i < length - 1 and reversed_ls[i] >= k >= reversed_ls[
-                i + 1]:  # if reach the endpoint, calculate length between both endpoint
-            print("i: " + str(i) + " j: " + str(j))
-            reversed_index = length - i - 1
-            if reversed_index - j >= max_count:
-                max_count = reversed_index - j
-                max_count_index = new_trans_ls[j]
+    k = transactions[j] + t  # end point
+    for i in range(n):
+        if transactions[i] <= k:
+            if i - j + 1 > max_count:
+                max_count = i - j + 1
+                max_count_index = max(transactions[i] - t, 0)
+        else:
             j += 1
-            k = new_trans_ls[j] + t
+            k = transactions[j] + t
     return (max_count_index, max_count)
     # print(new_endpt_ls)
-
+print(best_interval([1, 2, 4, 4, 4, 6, 10], 1))
+print(best_interval([11,1,1,11,1,1,1,1, 2, 4, 4, 4, 7, 10], 5))
 
 # lib = BigO()
 # complexity = lib.test_all(counting_sort)

@@ -52,23 +52,16 @@ def best_interval(transactions, t):
     max_count_index = 0
 
     transactions = radix_sort(transactions)
-    print(transactions)
     j = 0
-    # k = transactions[j] + t  # end point
-    max_count = 0
-    max_count_index = 0
+    k = transactions[j] + t  # end point
     for i in range(n):
-        end = i + 1
-        count = 1
-        k = transactions[i] + t
-        print("t[i] = " + str(transactions[i]))
-        print("k = " + str(k))
-        while end < n and transactions[end] <= k:
-            count += 1 
-            end += 1 
-        if count > max_count:
-            max_count = count 
-            max_count_index = max(0, transactions[end - 1] - t)
+        if transactions[i] <= k:
+            if i - j + 1 > max_count:
+                max_count = i - j + 1
+                max_count_index = max(transactions[i] - t, 0)
+        else:
+            j += 1
+            k = transactions[j] + t
     return (max_count_index, max_count)
 
 # ---------------------Function 3-----------------------#
@@ -149,30 +142,11 @@ def counting_sort_letter(word): # sort word to anagram
     return (res, word)
 
 
-# def search(arr, key):
-#     n = len(arr)
-#     lo, hi = 0, n
-#     while lo < hi:
-#         mid = (lo + hi) // 2
-#         mid_word = arr[mid][0]
-#         i = 0
-#         if ord(key[0]) >= ord(mid_word[0]):
-#             if len(key) >= len(mid_word):
-#                 index = len(mid_word)
-#                 while i < index and ord(key[i]) >= ord(mid_word[i])
-#             lo = mid
-#         else:
-#             hi = mid
-#     if len(arr) > 0 and arr[lo][0] == key:
-#         return True
-#     else:
-#         return False
-
-
 def words_with_anagrams(list1, list2):
     new_lst1, new_lst2 = [], []
     res = []
-    index = 0
+    first = 0
+    sec = 0
     for i in range(len(list1)):  # take O(nm) n = len(list) and m = length of longest word
         new_lst1.append(counting_sort_letter(list1[i]))
     for i in range(len(list2)): 
@@ -181,8 +155,25 @@ def words_with_anagrams(list1, list2):
     new_lst2 = radix_sort_str(new_lst2)
     print("List 1: " + str(new_lst1))
     print("List 2: " + str(new_lst2))
-    # for i in range(len(new_lst1)):
-        
+    
+    while first < len(new_lst1) and sec < len(new_lst2):
+        if new_lst1[first][0] == new_lst2[sec][0]:
+            res.extend(new_lst1[first][1]) 
+            first += 1 
+            sec += 1
+        else:
+            i, j = 0, 0
+            word1, word2 = new_lst1[first][0], new_lst2[sec][0]
+            while i < len(word1) and i < len(word2):
+                if ord(word1[i]) > ord(word2[j]):
+                    sec += 1
+                    break
+                elif ord(word2[j]) > ord(word1[i]):
+                    first += 1
+                    break
+                else:
+                    i += 1
+                    j += 1
     return res
 
 
@@ -193,11 +184,12 @@ t1 = 3
 transactions1 = [2, 4, 4, 4, 6, 10]
 lst1 = ["spot", "tops", "dad", "simple", "dine", "cats"]
 lst2 = ["pots", "add", "simple", "dined", "acts", "cast"]
-# print(best_interval(transactions, t))
+print(best_interval(transactions, t))
 # print(radix_sort_str(lst1))
-# print(words_with_anagrams(lst1, lst2))
-# print(words_with_anagrams(lst1, lst2))
-print(best_interval([1, 2, 4, 4, 4, 6, 10], 1))
-print(best_interval([11,1,1,11,1,1,1,1, 2, 4, 4, 4, 7, 10], 5))
-# print(best_interval([15,17,20,21,22,22,24,26,29,30,31], 5))
-# (17, 5)
+print(words_with_anagrams(lst1, lst2))
+# print(best_interval([1, 2, 4, 4, 4, 6, 10], 1)) # (3, 3)
+# print(best_interval([11,1,1,11,1,1,1,1, 2, 4, 4, 4, 7, 10], 5)) # (0, 10)
+# print(best_interval([15,17,20,21,22,22,24,26,29,30,31], 5)) # (17, 5)
+# print(best_interval([15,21,22,22,24,25,29,30,31], 5)) # (20, 5)
+# print(best_interval([5,1,5,1,5,1,5,1,5,1,5,1], 1)) # (0, 6)
+# print(best_interval([3, 2, 3], 5)) # (0, 3)
