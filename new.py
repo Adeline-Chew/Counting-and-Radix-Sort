@@ -1,4 +1,4 @@
-
+import math
 
 # ---------------------Function 1-----------------------#
 
@@ -31,11 +31,15 @@ def radix_sort_aux(arr, base, digit):  # example in notes
     return arr
 
 
-def radix_sort(arr, b, digits):
-    for d in range(0, digits):
-        arr = radix_sort_aux(arr, b, d)
+def radix_sort(arr):
+    max_num = 0 
+    for i in arr:
+        if max_num < i:
+            max_num = i 
+    digit = math.ceil(math.log10(max_num))
+    for d in range(0, digit):
+        arr = radix_sort_aux(arr, 10, d)
     return arr
-
 # ---------------------Best Interval-----------------------#
 
 
@@ -44,18 +48,15 @@ def best_interval(transactions, t):
     max_count = 0
     max_count_index = 0
 
-    # TODO: need to eliminate max digit
-    transactions = radix_sort(transactions, 10, len(str(max(transactions))))
-    print(transactions)
-    reversed_ls = transactions[::-1]  # O(n) descending list
+    transactions = radix_sort(transactions)
     j = 0
     k = transactions[j] + t  # end point
     for i in range(n):
-        if 0 < i < n - 1 and reversed_ls[i] >= k >= reversed_ls[i + 1]:
-            reversed_index = n - i - 1
-            if reversed_index - j >= max_count:
-                max_count = reversed_index - j
-                max_count_index = reversed_ls[i + 1] - t
+        if transactions[i] <= k:
+            if i - j + 1 > max_count:
+                max_count = i - j + 1
+                max_count_index = max(transactions[i] - t, 0)
+        else:
             j += 1
             k = transactions[j] + t
     return (max_count_index, max_count)
@@ -184,6 +185,9 @@ lst1 = ["spot", "tops", "dad", "simple", "dine", "cats"]
 lst2 = ["pots", "add", "simple", "dined", "acts", "cast"]
 # print(best_interval(transactions, t))
 # print(radix_sort_str(lst1))
-print(words_with_anagrams(lst1, lst2))
 # print(words_with_anagrams(lst1, lst2))
-# print(best_interval( [15,21,22,22,24,25,29,30,31], 5))
+# print(words_with_anagrams(lst1, lst2))
+print(best_interval([1, 2, 4, 4, 4, 6, 10], 1))
+print(best_interval([11,1,1,11,1,1,1,1, 2, 4, 4, 4, 7, 10], 5))
+# print(best_interval([15,17,20,21,22,22,24,26,29,30,31], 5))
+# (17, 5)
